@@ -8,7 +8,6 @@ const FilmList = ({ films }) => (
   <List
     grid={{ gutter: [32, 32], column: 2 }}
     dataSource={films}
-    
     renderItem={({id, ...film}) => (
       <List.Item>
         <Film {...film} />

@@ -13,6 +13,9 @@ export default class MoviesApiService {
     const queryParams = Object.entries(params).map(param => param.join('=')).join('&');
 
     const response = await fetch(`${this.baseUrl}${url}?${queryParams}`);
+    if(!response.ok) {
+      throw new Error(`Could not fetch ${url}, received ${response.status}`)
+    }
 
     return response.json();
   }
@@ -25,7 +28,6 @@ export default class MoviesApiService {
     return this.getResource('/search/movie', {
       query
     }).then(json => {
-
       // eslint-disable-next-line camelcase
       return json.results.map(({ id, original_title, release_date, genre_ids, overview, poster_path }) => {
         return {
@@ -36,7 +38,7 @@ export default class MoviesApiService {
           description: overview,
           poster: this.getPosterUrl(poster_path)
         }
-      })
+      });
     });
   }
 }

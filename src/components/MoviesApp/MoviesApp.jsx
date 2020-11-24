@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
+import { Layout, Alert } from 'antd';
 import FilmList from '../FilmList';
+import Spinner from '../Spinner';
 import MoviesApiService from '../../services/MoviesApiService';
 
 import 'antd/dist/antd.css';
@@ -12,7 +13,9 @@ export default class MoviesApp extends Component {
   moviesApiService = new MoviesApiService();
 
   state = {
-    films: []
+    films: [],
+    loading: true,
+    hasError: false
   };
 
   constructor() {
@@ -22,21 +25,41 @@ export default class MoviesApp extends Component {
   }
 
   updateFilms(query) {
-    this.moviesApiService.getMovies(query).then(films => {
-      this.setState({
-        films
+    this.moviesApiService.getMovies(query)
+      .then(films => {
+        this.setState({
+          films,
+          loading: false
+        })
       })
-    })
+      .catch(() => {
+        this.setState({
+          loading: false,
+          hasError: true
+        })
+      })
   }
 
-
   render() {
-    const { films } = this.state;
+    const { films, loading, hasError } = this.state;
+    const hasData = !loading && !hasError;
+    
+    const error = hasError
+      ? <Alert message="Error loading data" type="error" showIcon />
+      : null;
+    const spinner = loading 
+      ? <Spinner /> 
+      : null;
+    const content = hasData 
+      ? <FilmList films={ films } /> 
+      : null;
 
     return (
       <Layout>
         <Content className="movies-container">
-          <FilmList films={ films } />
+          {spinner}
+          {error}
+          {content}
         </Content>
       </Layout>
     );
