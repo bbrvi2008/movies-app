@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 const API_KEY = process.env.REACT_APP_MOVIEDB_API_KEY;
 
@@ -24,21 +25,32 @@ export default class MoviesApiService {
     return `https://image.tmdb.org/t/p/w300_and_h450_bestv2${imagePath}`;
   }
 
-  getMovies(query) {
+  getMovies(query, page = 1) {
     return this.getResource('/search/movie', {
-      query
+      query,
+      page
     }).then(json => {
-      // eslint-disable-next-line camelcase
-      return json.results.map(({ id, original_title, release_date, genre_ids, overview, poster_path }) => {
-        return {
-          id,
-          title: original_title,
-          date: new Date(release_date),
-          genres: ['Drama', 'Action'],
-          description: overview,
-          poster: this.getPosterUrl(poster_path)
-        }
-      });
+      const { page: currentPage, total_pages: countPages, total_results: countItems, results } = json;
+
+      return {
+        currentPage,
+        countPages,
+        countItems,
+        films: this.transformMovies(results)
+      };
+    });
+  }
+
+  transformMovies(arr) {
+    return arr.map(({ id, original_title, release_date, genre_ids, overview, poster_path }) => {
+      return {
+        id,
+        title: original_title,
+        date: Date.parse(release_date) ? new Date(release_date) : null,
+        genres: ['Drama', 'Action'],
+        description: overview,
+        poster: this.getPosterUrl(poster_path)
+      }
     });
   }
 }

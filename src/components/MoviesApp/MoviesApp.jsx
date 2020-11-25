@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Layout, Alert } from 'antd';
+import { Layout, Alert, Pagination } from 'antd';
+
+import SearchForm from '../SearchForm';
 import FilmList from '../FilmList';
 import Spinner from '../Spinner';
+
 import MoviesApiService from '../../services/MoviesApiService';
 
 import 'antd/dist/antd.css';
@@ -13,23 +16,45 @@ export default class MoviesApp extends Component {
   moviesApiService = new MoviesApiService();
 
   state = {
+    searchText: 'return',
+    currentPage: 1,
+    countItems: null,
     films: [],
-    loading: true,
+    loading: false,
     hasError: false
   };
 
-  constructor() {
-    super();
+  handleSearchTextChange = (searchText) => {
+    if(searchText === '') return;
 
-    this.updateFilms('return');
+    this.setState({
+      loading: true,
+      searchText,
+      currentPage: 1,
+      countItems: null,
+    });
+    this.updateFilms(searchText);
   }
 
-  updateFilms(query) {
-    this.moviesApiService.getMovies(query)
-      .then(films => {
+  handleCurrentPageChange = (currentPage) => {
+    const { searchText } = this.state;
+    this.setState({
+      loading: true,
+      currentPage
+    });
+
+    this.updateFilms(searchText, currentPage);
+  }
+
+  updateFilms(query, page) {
+    this.moviesApiService.getMovies(query, page)
+      .then(({ films, currentPage, countItems }) => {
         this.setState({
+          currentPage,
+          countItems,
           films,
-          loading: false
+          loading: false,
+          hasError: false
         })
       })
       .catch(() => {
@@ -41,7 +66,7 @@ export default class MoviesApp extends Component {
   }
 
   render() {
-    const { films, loading, hasError } = this.state;
+    const { films, loading, hasError, currentPage, countItems  } = this.state;
     const hasData = !loading && !hasError;
     
     const error = hasError
@@ -57,9 +82,21 @@ export default class MoviesApp extends Component {
     return (
       <Layout>
         <Content className="movies-container">
+          <header className="movies-container__search-from">
+            <SearchForm onChangeDebounced={this.handleSearchTextChange} />
+          </header>
           {spinner}
           {error}
           {content}
+          <Pagination 
+            className="movies-container__pagination" 
+            size="small"
+            hideOnSinglePage
+            showSizeChanger={false}
+            current={currentPage}
+            defaultPageSize={20}
+            total={countItems}
+            onChange={this.handleCurrentPageChange} />
         </Content>
       </Layout>
     );

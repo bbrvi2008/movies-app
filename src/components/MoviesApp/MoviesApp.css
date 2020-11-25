@@ -6,3 +6,11 @@
   padding: 32px 36px;
   background-color: #FFFFFF;
 }
+
+.movies-container__pagination {
+  text-align: center;
+}
+
+.movies-container__search-from {
+  margin-bottom: 32px;
+}
