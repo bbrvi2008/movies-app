@@ -1,4 +1,4 @@
-function getShortText(text, length = 190) {
+function getShortText(text, length = 150) {
   if(text.length < 190) return text;
 
   const shortText = text
