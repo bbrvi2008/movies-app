@@ -1,38 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import './FilmRate.css';
 
-const getColorClassNameByValue = (value) => {
-  if(value < 3) {
-    return 'film-rate--color-1';
-  }
-
-  if(value >= 3 && value < 5) {
-    return 'film-rate--color-2';
-  }
-
-  if(value >= 5 && value < 7) {
-    return 'film-rate--color-3';
-  }
-
-  if(value >= 7) {
-    return 'film-rate--color-4';
-  }
-
-  return '';
-}
-
 const FilmRate = ({ value, className }) => {
-  const colorClass = getColorClassNameByValue(value);
-
-  const classNames = className
-    .split(' ')
-    .concat(['film-rate', colorClass])
-    .join(' ');
+  const classes = classNames({
+    'film-rate--color-1': value < 3,
+    'film-rate--color-2': value >= 3 && value < 5,
+    'film-rate--color-3': value >= 5 && value < 7,
+    'film-rate--color-4': value >= 7,
+  },
+  'film-rate',
+  className)
 
   return (
-    <div className={ classNames } >
+    <div className={ classes } >
       {value}
     </div>
   );

@@ -30,10 +30,7 @@ class SearchPage extends Component {
 
   componentDidMount() {
     const { searchText } = this.state;
-
-    this.setState({
-      loading: true,
-    });
+    
     this.updateFilms(searchText);
   }
 
@@ -41,7 +38,6 @@ class SearchPage extends Component {
     if(searchText === '') return;
 
     this.setState({
-      loading: true,
       searchText,
       currentPage: 1,
       countItems: null,
@@ -52,7 +48,6 @@ class SearchPage extends Component {
   handleCurrentPageChange = (currentPage) => {
     const { searchText } = this.state;
     this.setState({
-      loading: true,
       currentPage
     });
 
@@ -90,6 +85,10 @@ class SearchPage extends Component {
   }
 
   updateFilms(query, page) {
+    this.setState({
+      loading: true,
+    });
+
     this.moviesApiService.getMovies(query, page)
       .then((json) => {
         const { films, currentPage, countItems } = json;

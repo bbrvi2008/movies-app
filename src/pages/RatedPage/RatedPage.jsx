@@ -27,9 +27,6 @@ class RatedPage extends Component {
   };
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-    });
     this.updateFilms();
   }
 
@@ -37,10 +34,6 @@ class RatedPage extends Component {
     const { ratedListChanged } = this.props;
 
     if(ratedListChanged !== prevRatedListChanged) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        loading: true,
-      });
       this.updateFilms();
     }
   }
@@ -73,7 +66,6 @@ class RatedPage extends Component {
 
   handleCurrentPageChange = (currentPage) => {
     this.setState({
-      loading: true,
       currentPage
     });
 
@@ -81,6 +73,10 @@ class RatedPage extends Component {
   }
 
   updateFilms(page) {
+    this.setState({
+      loading: true
+    });
+
     this.moviesApiService.getRatedMovies(page)
       .then((json) => {
         const { films, currentPage, countItems } = json;

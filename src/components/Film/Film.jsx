@@ -17,7 +17,7 @@ const Film = ({ title, description, date, genres, poster, rate, rating, onRateCh
     </Col>
     <Col xs={24} sm={24} md={15} className="film-item__content" >
       <Typography.Title level={4} className="film-item__title" >{title}</Typography.Title>
-      <FilmRate className="film-item__rating" value={rate} />
+      <FilmRate className="film-item__rating test" value={rate} />
       <Space size={7} direction="vertical">
         <Typography.Text type="secondary">{date && format(date, 'MMMM d, Y')}</Typography.Text>
         <GenresConsumer>

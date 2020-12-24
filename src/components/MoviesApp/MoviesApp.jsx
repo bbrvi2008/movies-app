@@ -17,7 +17,7 @@ const moviesApiService = new MoviesApiService();
 
 export default class MoviesApp extends Component {
   state = {
-    ratedListChanged: null
+    currentTab: "1"
   }
 
   componentDidMount() {
@@ -28,25 +28,27 @@ export default class MoviesApp extends Component {
     });
   }
 
-  handleChangeRatedList = () => {
+  handleTabClick = (key) => {
     this.setState({
-      ratedListChanged: new Date()
-    })
+      currentTab: key
+    });
   }
 
   render() {
-    const { ratedListChanged, genres } = this.state;
+    const { currentTab, genres } = this.state;
+
+    console.log(currentTab);
 
     return (
       <GenresProvider value={genres}>
         <Layout>
           <Content className="movies-container">
-            <Tabs defaultActiveKey="1" centered>
+            <Tabs defaultActiveKey={currentTab} centered onTabClick={this.handleTabClick}>
               <TabPane tab="Search" key="1" className="movies-container__tab">
-                <SearchPage onChangeRatedList={this.handleChangeRatedList} />
+                {currentTab === "1" ? <SearchPage /> : null}
               </TabPane>
               <TabPane tab="Rated" key="2" className="movies-container__tab">
-                <RatedPage ratedListChanged={ratedListChanged} />
+                {currentTab === "2" ? <RatedPage /> : null}
               </TabPane>
             </Tabs>
           </Content>
