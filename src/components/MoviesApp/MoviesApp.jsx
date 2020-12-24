@@ -37,8 +37,6 @@ export default class MoviesApp extends Component {
   render() {
     const { currentTab, genres } = this.state;
 
-    console.log(currentTab);
-
     return (
       <GenresProvider value={genres}>
         <Layout>
